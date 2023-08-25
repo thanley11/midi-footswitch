@@ -47,22 +47,6 @@ Bounce digital[] =   {
   Bounce(DIGITAL_SWITCHES[3], BOUNCE_TIME),
 };
 
-void SendSysExButton1(){
-#ifdef DEBUG
-    Serial.println(volume, DEC);
-#else
-    SerialOutput(0xF0);         // SysEx start
-    SerialOutput(0x00);         // Manufacturer 0
-    SerialOutput(0x01);         // Model 1
-    SerialOutput(MIDI_CHANNEL);      // MIDI channel
-    SerialOutput(0x42);         // Data
-    SerialOutput(0x42);         // Data
-    SerialOutput(volume);       // Data
-    SerialOutput(0x42);         // Data
-    SerialOutput(0x42);         // Data
-    SerialOutput(0xF7);         // SysEx end
-}
-
 //Setup
 void setup() {
   for (int i = 0; i < SWITCHES; i++) {
@@ -84,17 +68,6 @@ void readSwitches() {
   digital[input].update();
 
   if (digital[input].fallingEdge()) {
-    switch(input){
-      case 0:
-        SendsysExButton1();
-        break;
-      case 1:
-        SendsysExButton2();
-        break;
-      default:
-        break;
-
-      }
     usbMIDI.sendControlChange(CC_NUMBER[input], VELOCITY, MIDI_CHANNEL);
   }
   else if (digital[input].risingEdge()) {
